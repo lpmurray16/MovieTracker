@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
-import { TrackingService } from '../../services/tracking.service';
-import { Movie, MovieStatus } from '../../types/movie.types';
+import { Movie } from '../../types/movie.types';
 
 @Component({
   selector: 'app-watched',
@@ -75,8 +74,7 @@ export class WatchedComponent implements OnInit {
   trackedMovieIds: number[] = [];
 
   constructor(
-    private movieService: MovieService,
-    private trackingService: TrackingService
+    private movieService: MovieService
   ) {}
 
   ngOnInit(): void {
@@ -84,44 +82,20 @@ export class WatchedComponent implements OnInit {
   }
 
   loadWatchedMovies(): void {
-    this.isLoading = true;
+    // For now, we're not loading any data
+    // This is just a placeholder until database functionality is implemented
+    this.isLoading = false;
+    this.movies = [];
     this.errorMessage = '';
-    
-    // Get all movies with 'watched' status
-    const watchedItems = this.trackingService.getMoviesByStatus('watched');
-    this.trackedMovieIds = watchedItems.map(item => item.movieId);
-    
-    if (this.trackedMovieIds.length === 0) {
-      this.isLoading = false;
-      return;
-    }
-    
-    // Fetch details for each watched movie
-    const moviePromises = this.trackedMovieIds.map(movieId => 
-      this.movieService.getMovieDetails(movieId).toPromise()
-    );
-    
-    Promise.all(moviePromises)
-      .then(movies => {
-        this.movies = movies.filter(movie => movie !== null);
-        this.isLoading = false;
-      })
-      .catch(error => {
-        console.error('Error fetching watched movies', error);
-        this.errorMessage = 'Failed to load your watched movies. Please try again later.';
-        this.isLoading = false;
-      });
   }
 
   updateStatus(movieId: number, newStatus: 'want-to-watch' | 'in-progress'): void {
-    this.trackingService.trackMovie(movieId, newStatus);
-    // Remove from this list since status changed
-    this.movies = this.movies.filter(movie => movie.id !== movieId);
+    // Database functionality will be implemented later
+    console.log(`Movie ${movieId} would be marked as ${newStatus}`);
   }
 
   removeFromTracking(movieId: number): void {
-    this.trackingService.removeTracking(movieId);
-    // Remove from displayed list
-    this.movies = this.movies.filter(movie => movie.id !== movieId);
+    // Database functionality will be implemented later
+    console.log(`Movie ${movieId} would be removed from database`);
   }
 }

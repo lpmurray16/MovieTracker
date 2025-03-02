@@ -8,6 +8,7 @@ export interface Movie {
 }
 
 export interface MovieStatus {
+  userId: string;
   movieId: number;
   status: 'want-to-watch' | 'in-progress' | 'watched';
   lastUpdated: Date;

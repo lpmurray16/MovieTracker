@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
-import { TrackingService } from '../../services/tracking.service';
-import { Movie, MovieStatus } from '../../types/movie.types';
+import { Movie } from '../../types/movie.types';
 
 @Component({
   selector: 'app-movie-details',
@@ -61,52 +60,6 @@ import { Movie, MovieStatus } from '../../types/movie.types';
                 <span class="font-semibold">Rating:</span> ⭐ {{ movie.vote_average | number:'1.1-1' }}/10
               </p>
               
-              <div class="card bg-base-200 p-4 mt-4" *ngIf="movieStatus">
-                <p>
-                  <span class="font-semibold">Status:</span> 
-                  <span [ngClass]="{
-                    'text-primary font-bold': movieStatus.status === 'want-to-watch',
-                    'text-warning font-bold': movieStatus.status === 'in-progress',
-                    'text-success font-bold': movieStatus.status === 'watched'
-                  }">
-                    {{ getStatusLabel(movieStatus.status) }}
-                  </span>
-                </p>
-                <p class="text-xs opacity-70 mt-1">
-                  Last updated: {{ movieStatus.lastUpdated | date:'medium' }}
-                </p>
-              </div>
-            </div>
-            
-            <div class="flex flex-wrap gap-2 mb-6">
-              <button 
-                (click)="trackMovie('want-to-watch')" 
-                class="btn btn-primary btn-sm"
-                [class.btn-outline]="movieStatus?.status !== 'want-to-watch'"
-              >
-                Want to Watch
-              </button>
-              <button 
-                (click)="trackMovie('in-progress')" 
-                class="btn btn-warning btn-sm"
-                [class.btn-outline]="movieStatus?.status !== 'in-progress'"
-              >
-                In Progress
-              </button>
-              <button 
-                (click)="trackMovie('watched')" 
-                class="btn btn-success btn-sm"
-                [class.btn-outline]="movieStatus?.status !== 'watched'"
-              >
-                Watched
-              </button>
-              <button 
-                *ngIf="movieStatus" 
-                (click)="removeFromTracking()" 
-                class="btn btn-error btn-sm"
-              >
-                Remove Tracking
-              </button>
             </div>
           </div>
         </div>
@@ -121,7 +74,6 @@ import { Movie, MovieStatus } from '../../types/movie.types';
 })
 export class MovieDetailsComponent implements OnInit {
   movie: Movie | null = null;
-  movieStatus: MovieStatus | undefined;
   isLoading = false;
   errorMessage = '';
   movieId: number = 0;
@@ -129,7 +81,6 @@ export class MovieDetailsComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private movieService: MovieService,
-    private trackingService: TrackingService
   ) {}
 
   ngOnInit(): void {
@@ -151,7 +102,6 @@ export class MovieDetailsComponent implements OnInit {
     this.movieService.getMovieDetails(this.movieId).subscribe({
       next: (movie) => {
         this.movie = movie;
-        this.movieStatus = this.trackingService.getMovieStatus(this.movieId);
         this.isLoading = false;
       },
       error: (error) => {
@@ -162,30 +112,5 @@ export class MovieDetailsComponent implements OnInit {
     });
   }
 
-  trackMovie(status: 'want-to-watch' | 'in-progress' | 'watched'): void {
-    if (this.movieId) {
-      this.trackingService.trackMovie(this.movieId, status);
-      this.movieStatus = this.trackingService.getMovieStatus(this.movieId);
-    }
-  }
 
-  removeFromTracking(): void {
-    if (this.movieId) {
-      this.trackingService.removeTracking(this.movieId);
-      this.movieStatus = undefined;
-    }
-  }
-
-  getStatusLabel(status: string): string {
-    switch (status) {
-      case 'want-to-watch':
-        return 'Want to Watch';
-      case 'in-progress':
-        return 'In Progress';
-      case 'watched':
-        return 'Watched';
-      default:
-        return status;
-    }
-  }
 }

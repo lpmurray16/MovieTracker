@@ -4,11 +4,21 @@
       <a class="btn btn-ghost text-xl">MovieTracker</a>
     </div>
     <div class="flex-none">
-      <ul class="menu menu-horizontal px-1">
-        <li><a routerLink="/search" routerLinkActive="tab-active" class="btn btn-ghost tab">Search</a></li>
-        <li><a routerLink="/watchlist" routerLinkActive="tab-active" class="btn btn-ghost tab">Want to Watch</a></li>
-        <li><a routerLink="/in-progress" routerLinkActive="tab-active" class="btn btn-ghost tab">In Progress</a></li>
-        <li><a routerLink="/watched" routerLinkActive="tab-active" class="btn btn-ghost tab">Watched</a></li>
+      <ul class="tabs tabs-border">
+        <li><a routerLink="/search" routerLinkActive="tab-active" class="tab">Search</a></li>
+        <li><a routerLink="/watchlist" routerLinkActive="tab-active" class="tab">Want to Watch</a></li>
+        <li><a routerLink="/in-progress" routerLinkActive="tab-active" class="tab">In Progress</a></li>
+        <li><a routerLink="/watched" routerLinkActive="tab-active" class="tab">Watched</a></li>
+        <li *ngIf="user">
+          <span class="tab no-click">{{ user.email || '' }}</span>
+        </li>
+        <li *ngIf="user">
+          <button (click)="signOut()" class="tab">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </button>
+        </li>
       </ul>
     </div>
   </div>
@@ -38,6 +48,10 @@
       <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt"><path d="M20 6L9 17l-5-5" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="2"></path><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="2"></circle></g></svg>
       <span class="dock-label">Watched</span>
     </button>
-
+    
+    <button *ngIf="user" (click)="signOut()" class="relative">
+      <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" fill="none" stroke="currentColor"></path></g></svg>
+      <span class="dock-label">Sign Out</span>
+    </button>
   </div>
 </div>

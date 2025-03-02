@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
-import { TrackingService } from '../../services/tracking.service';
-import { Movie, MovieStatus } from '../../types/movie.types';
+import { Movie } from '../../types/movie.types';
 
 @Component({
   selector: 'app-watchlist',
@@ -35,7 +34,10 @@ import { Movie, MovieStatus } from '../../types/movie.types';
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6"
         *ngIf="movies.length"
       >
-        <div class="card lg:card-side bg-base-300 shadow-xl" *ngFor="let movie of movies">
+        <div
+          class="card lg:card-side bg-base-300 shadow-xl"
+          *ngFor="let movie of movies"
+        >
           <figure class="lg:w-50 lg:h-full sm:h-50 flex-shrink-0">
             <img
               *ngIf="movie.poster_path"
@@ -67,20 +69,20 @@ import { Movie, MovieStatus } from '../../types/movie.types';
               >
               <div class="grid grid-cols-2 gap-2 w-full">
                 <button
-                  (click)="updateStatus(movie.id, 'in-progress')"
+                  (click)="updateStatusOfMovie(movie.id, 'in-progress')"
                   class="btn btn-warning btn-sm"
                 >
                   Mark In Progress
                 </button>
                 <button
-                  (click)="updateStatus(movie.id, 'watched')"
+                  (click)="updateStatusOfMovie(movie.id, 'watched')"
                   class="btn btn-success btn-sm"
                 >
                   Mark Watched
                 </button>
               </div>
               <button
-                (click)="removeFromTracking(movie.id)"
+                (click)="removeFromDatabase(movie.id)"
                 class="btn btn-error btn-sm w-full"
               >
                 Remove
@@ -98,56 +100,30 @@ export class WatchlistComponent implements OnInit {
   errorMessage = '';
   trackedMovieIds: number[] = [];
 
-  constructor(
-    private movieService: MovieService,
-    private trackingService: TrackingService
-  ) {}
+  constructor(private movieService: MovieService) {}
 
   ngOnInit(): void {
     this.loadWatchlist();
   }
 
   loadWatchlist(): void {
-    this.isLoading = true;
+    // For now, we're not loading any data
+    // This is just a placeholder until database functionality is implemented
+    this.isLoading = false;
+    this.movies = [];
     this.errorMessage = '';
-
-    // Get all movies with 'want-to-watch' status
-    const watchlistItems =
-      this.trackingService.getMoviesByStatus('want-to-watch');
-    this.trackedMovieIds = watchlistItems.map((item) => item.movieId);
-
-    if (this.trackedMovieIds.length === 0) {
-      this.isLoading = false;
-      return;
-    }
-
-    // Fetch details for each movie in the watchlist
-    const moviePromises = this.trackedMovieIds.map((movieId) =>
-      this.movieService.getMovieDetails(movieId).toPromise()
-    );
-
-    Promise.all(moviePromises)
-      .then((movies) => {
-        this.movies = movies.filter((movie) => movie !== null);
-        this.isLoading = false;
-      })
-      .catch((error) => {
-        console.error('Error fetching watchlist movies', error);
-        this.errorMessage =
-          'Failed to load your watchlist. Please try again later.';
-        this.isLoading = false;
-      });
   }
 
-  updateStatus(movieId: number, newStatus: 'in-progress' | 'watched'): void {
-    this.trackingService.trackMovie(movieId, newStatus);
-    // Remove from this list since status changed
-    this.movies = this.movies.filter((movie) => movie.id !== movieId);
+  updateStatusOfMovie(
+    movieId: number,
+    newStatus: 'in-progress' | 'watched'
+  ): void {
+    // Database functionality will be implemented later
+    console.log(`Movie ${movieId} would be marked as ${newStatus}`);
   }
 
-  removeFromTracking(movieId: number): void {
-    this.trackingService.removeTracking(movieId);
-    // Remove from displayed list
-    this.movies = this.movies.filter((movie) => movie.id !== movieId);
+  removeFromDatabase(movieId: number): void {
+    // Database functionality will be implemented later
+    console.log(`Movie ${movieId} would be removed from database`);
   }
 }

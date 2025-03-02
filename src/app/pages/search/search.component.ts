@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
-import { TrackingService } from '../../services/tracking.service';
-import { Movie, MovieStatus, MovieWithStatus } from '../../types/movie.types';
+import { Movie } from '../../types/movie.types';
 
 @Component({
   selector: 'app-search',
@@ -83,22 +82,23 @@ import { Movie, MovieStatus, MovieWithStatus } from '../../types/movie.types';
                 class="btn btn-outline w-full"
                 >Details</a
               >
+              <!-- Database functionality will be added later -->
               <div class="grid grid-cols-3 gap-2 w-full">
                 <button
-                  (click)="trackMovie(movie.id, 'want-to-watch')"
-                  class="btn btn-primary btn-sm"
+                  class="btn btn-primary btn-sm disabled"
+                  disabled
                 >
                   Want to Watch
                 </button>
                 <button
-                  (click)="trackMovie(movie.id, 'in-progress')"
-                  class="btn btn-warning btn-sm"
+                  class="btn btn-warning btn-sm disabled"
+                  disabled
                 >
                   In Progress
                 </button>
                 <button
-                  (click)="trackMovie(movie.id, 'watched')"
-                  class="btn btn-success btn-sm"
+                  class="btn btn-success btn-sm disabled"
+                  disabled
                 >
                   Watched
                 </button>
@@ -118,8 +118,7 @@ export class SearchComponent implements OnInit {
   searchPerformed = false;
 
   constructor(
-    private movieService: MovieService,
-    private trackingService: TrackingService
+    private movieService: MovieService
   ) {}
 
   ngOnInit(): void {
@@ -172,11 +171,5 @@ export class SearchComponent implements OnInit {
     });
   }
 
-  trackMovie(
-    movieId: number,
-    status: 'want-to-watch' | 'in-progress' | 'watched'
-  ): void {
-    this.trackingService.trackMovie(movieId, status);
-    // Could add a toast notification here
-  }
+
 }
