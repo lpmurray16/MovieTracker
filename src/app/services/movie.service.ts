@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class MovieService {
-  private apiKey = 'YOUR_TMDB_API_KEY'; // You'll need to replace this with your actual TMDB API key
+  private apiKey = '656734badd7f0dac8ef7ac8e27b365e5'; // You'll need to replace this with your actual TMDB API key
   private baseUrl = 'https://api.themoviedb.org/3';
 
   constructor(private http: HttpClient) {}

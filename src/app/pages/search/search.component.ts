@@ -11,61 +11,95 @@ import { Movie, MovieStatus, MovieWithStatus } from '../../types/movie.types';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   template: `
-    <div class="search-container">
-      <h2>Search Movies</h2>
-      <div class="search-form">
-        <input 
-          type="text" 
-          [(ngModel)]="searchQuery" 
+    <div class="container mx-auto p-4">
+      <h2 class="text-2xl font-bold mb-6">Search Movies</h2>
+      <div class="join w-full max-w-md mx-auto mb-8">
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
           placeholder="Enter movie title..."
           (keyup.enter)="searchMovies()"
+          class="input input-bordered join-item flex-1"
         />
-        <button (click)="searchMovies()">Search</button>
+        <button (click)="searchMovies()" class="btn btn-primary join-item">
+          Search
+        </button>
       </div>
 
-      <div *ngIf="isLoading" class="loading">
-        Loading...
+      <div *ngIf="isLoading" class="flex justify-center items-center p-8">
+        <span class="loading loading-spinner loading-lg text-primary"></span>
       </div>
 
-      <div *ngIf="errorMessage" class="error">
+      <div *ngIf="errorMessage" class="alert alert-error mb-4">
         {{ errorMessage }}
       </div>
 
-      <div *ngIf="!isLoading && !searchResults.length && !errorMessage && searchPerformed" class="no-results">
+      <div
+        *ngIf="
+          !isLoading &&
+          !searchResults.length &&
+          !errorMessage &&
+          searchPerformed
+        "
+        class="alert alert-info"
+      >
         No movies found. Try a different search term.
       </div>
 
-      <div class="movie-grid" *ngIf="searchResults.length">
-        <div class="movie-card" *ngFor="let movie of searchResults">
-          <div class="movie-poster">
-            <img 
-              *ngIf="movie.poster_path" 
-              [src]="'https://image.tmdb.org/t/p/w300' + movie.poster_path" 
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6"
+        *ngIf="searchResults.length"
+      >
+        <div
+          class="card lg:card-side bg-base-300 shadow-xl"
+          *ngFor="let movie of searchResults"
+        >
+          <figure class="lg:w-50 lg:h-full sm:h-50 flex-shrink-0">
+            <img
+              *ngIf="movie.poster_path"
+              [src]="'https://image.tmdb.org/t/p/w300' + movie.poster_path"
               [alt]="movie.title + ' poster'"
+              class="w-full h-full object-cover"
             />
-            <div *ngIf="!movie.poster_path" class="no-poster">
+            <div
+              *ngIf="!movie.poster_path"
+              class="w-full h-full flex items-center justify-center bg-base-200 text-base-content/60"
+            >
               No poster available
             </div>
-          </div>
-          <div class="movie-info">
-            <h3>{{ movie.title }}</h3>
-            <p class="release-date" *ngIf="movie.release_date">
-              {{ movie.release_date | date:'yyyy' }}
+          </figure>
+          <div class="card-body">
+            <h3 class="card-title text-lg">{{ movie.title }}</h3>
+            <p class="text-sm opacity-70" *ngIf="movie.release_date">
+              {{ movie.release_date | date : 'yyyy' }}
             </p>
-            <p class="rating" *ngIf="movie.vote_average">
-              ⭐ {{ movie.vote_average | number:'1.1-1' }}/10
+            <p class="text-sm" *ngIf="movie.vote_average">
+              ⭐ {{ movie.vote_average | number : '1.1-1' }}/10
             </p>
-            <p class="overview">{{ movie.overview | slice:0:150 }}{{ movie.overview.length > 150 ? '...' : '' }}</p>
-            <div class="actions">
-              <a [routerLink]="['/movie', movie.id]" class="details-btn">Details</a>
-              <div class="tracking-buttons">
-                <button (click)="trackMovie(movie.id, 'want-to-watch')" class="track-btn want-to-watch">
+            <p class="text-sm opacity-90 line-clamp-3">{{ movie.overview }}</p>
+            <div class="card-actions flex-col gap-4 mt-4 items-center">
+              <a
+                [routerLink]="['/movie', movie.id]"
+                class="btn btn-outline w-full"
+                >Details</a
+              >
+              <div class="grid grid-cols-3 gap-2 w-full">
+                <button
+                  (click)="trackMovie(movie.id, 'want-to-watch')"
+                  class="btn btn-primary btn-sm"
+                >
                   Want to Watch
                 </button>
-                <button (click)="trackMovie(movie.id, 'in-progress')" class="track-btn in-progress">
+                <button
+                  (click)="trackMovie(movie.id, 'in-progress')"
+                  class="btn btn-warning btn-sm"
+                >
                   In Progress
                 </button>
-                <button (click)="trackMovie(movie.id, 'watched')" class="track-btn watched">
+                <button
+                  (click)="trackMovie(movie.id, 'watched')"
+                  class="btn btn-success btn-sm"
+                >
                   Watched
                 </button>
               </div>
@@ -75,158 +109,6 @@ import { Movie, MovieStatus, MovieWithStatus } from '../../types/movie.types';
       </div>
     </div>
   `,
-  styles: [`
-    .search-container {
-      padding: 20px 0;
-    }
-
-    .search-form {
-      display: flex;
-      margin-bottom: 20px;
-    }
-
-    input {
-      flex: 1;
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px 0 0 4px;
-    }
-
-    button {
-      padding: 10px 20px;
-      background-color: #1976d2;
-      color: white;
-      border: none;
-      border-radius: 0 4px 4px 0;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    button:hover {
-      background-color: #1565c0;
-    }
-
-    .movie-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
-    }
-
-    .movie-card {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      background-color: white;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .movie-poster {
-      height: 200px;
-      overflow: hidden;
-    }
-
-    .movie-poster img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .no-poster {
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #f5f5f5;
-      color: #777;
-    }
-
-    .movie-info {
-      padding: 15px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    h3 {
-      margin: 0 0 10px 0;
-      font-size: 18px;
-    }
-
-    .release-date, .rating {
-      margin: 0 0 10px 0;
-      font-size: 14px;
-      color: #666;
-    }
-
-    .overview {
-      margin: 0 0 15px 0;
-      font-size: 14px;
-      line-height: 1.4;
-      flex: 1;
-    }
-
-    .actions {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .details-btn {
-      display: inline-block;
-      padding: 8px 16px;
-      background-color: #f0f0f0;
-      color: #333;
-      text-decoration: none;
-      border-radius: 4px;
-      text-align: center;
-    }
-
-    .details-btn:hover {
-      background-color: #e0e0e0;
-    }
-
-    .tracking-buttons {
-      display: flex;
-      gap: 5px;
-    }
-
-    .track-btn {
-      flex: 1;
-      padding: 6px;
-      font-size: 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      border: none;
-    }
-
-    .want-to-watch {
-      background-color: #2196f3;
-      color: white;
-    }
-
-    .in-progress {
-      background-color: #ff9800;
-      color: white;
-    }
-
-    .watched {
-      background-color: #4caf50;
-      color: white;
-    }
-
-    .loading, .error, .no-results {
-      text-align: center;
-      padding: 20px;
-      font-size: 16px;
-    }
-
-    .error {
-      color: #d32f2f;
-    }
-  `]
 })
 export class SearchComponent implements OnInit {
   searchQuery = '';
@@ -248,7 +130,7 @@ export class SearchComponent implements OnInit {
   loadPopularMovies(): void {
     this.isLoading = true;
     this.errorMessage = '';
-    
+
     this.movieService.getPopularMovies().subscribe({
       next: (response) => {
         this.searchResults = response.results;
@@ -257,10 +139,11 @@ export class SearchComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error fetching popular movies', error);
-        this.errorMessage = 'Failed to load popular movies. Please try again later.';
+        this.errorMessage =
+          'Failed to load popular movies. Please try again later.';
         this.isLoading = false;
         this.searchPerformed = true;
-      }
+      },
     });
   }
 
@@ -273,7 +156,7 @@ export class SearchComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
     this.searchResults = [];
-    
+
     this.movieService.searchMovies(this.searchQuery).subscribe({
       next: (response) => {
         this.searchResults = response.results;
@@ -285,11 +168,14 @@ export class SearchComponent implements OnInit {
         this.errorMessage = 'Failed to search movies. Please try again later.';
         this.isLoading = false;
         this.searchPerformed = true;
-      }
+      },
     });
   }
 
-  trackMovie(movieId: number, status: 'want-to-watch' | 'in-progress' | 'watched'): void {
+  trackMovie(
+    movieId: number,
+    status: 'want-to-watch' | 'in-progress' | 'watched'
+  ): void {
     this.trackingService.trackMovie(movieId, status);
     // Could add a toast notification here
   }

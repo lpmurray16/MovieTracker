@@ -10,92 +10,100 @@ import { Movie, MovieStatus } from '../../types/movie.types';
   standalone: true,
   imports: [CommonModule, RouterLink],
   template: `
-    <div class="movie-details-container">
-      <div *ngIf="isLoading" class="loading">
-        Loading...
+    <div class="container mx-auto p-4">
+      <div *ngIf="isLoading" class="flex justify-center items-center p-8">
+        <span class="loading loading-spinner loading-lg text-primary"></span>
       </div>
 
-      <div *ngIf="errorMessage" class="error">
+      <div *ngIf="errorMessage" class="alert alert-error mb-4">
         {{ errorMessage }}
       </div>
 
-      <div *ngIf="!isLoading && !movie" class="not-found">
-        <p>Movie not found. The movie might have been removed or the ID is invalid.</p>
-        <a routerLink="/search" class="back-link">Back to Search</a>
+      <div *ngIf="!isLoading && !movie" class="card bg-base-200 p-8 text-center">
+        <p class="mb-4">Movie not found. The movie might have been removed or the ID is invalid.</p>
+        <a routerLink="/search" class="btn btn-outline">Back to Search</a>
       </div>
 
       <div class="movie-content" *ngIf="movie">
-        <div class="back-navigation">
-          <a routerLink="/search" class="back-link">← Back to Search</a>
+        <div class="mb-4">
+          <a routerLink="/search" class="btn btn-ghost btn-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-1">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+            </svg>
+            Back to Search
+          </a>
         </div>
 
-        <div class="movie-header">
-          <div class="movie-poster">
-            <img 
-              *ngIf="movie.poster_path" 
-              [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path" 
-              [alt]="movie.title + ' poster'"
-            />
-            <div *ngIf="!movie.poster_path" class="no-poster">
-              No poster available
+        <div class="flex flex-col md:flex-row gap-6 mb-8">
+          <div class="w-full md:w-1/3 lg:w-1/4 flex-shrink-0">
+            <div class="rounded-lg overflow-hidden shadow-lg h-auto md:h-96">
+              <img 
+                *ngIf="movie.poster_path" 
+                [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path" 
+                [alt]="movie.title + ' poster'"
+                class="w-full h-full object-cover"
+              />
+              <div *ngIf="!movie.poster_path" class="w-full h-full flex items-center justify-center bg-base-200 text-base-content/60 p-8">
+                No poster available
+              </div>
             </div>
           </div>
           
-          <div class="movie-info">
-            <h1>{{ movie.title }}</h1>
+          <div class="flex-1">
+            <h1 class="text-3xl font-bold mb-4">{{ movie.title }}</h1>
             
-            <div class="movie-meta">
-              <p *ngIf="movie.release_date" class="release-date">
-                <strong>Release Date:</strong> {{ movie.release_date | date:'longDate' }}
+            <div class="space-y-3 mb-6">
+              <p *ngIf="movie.release_date" class="text-sm">
+                <span class="font-semibold">Release Date:</span> {{ movie.release_date | date:'longDate' }}
               </p>
               
-              <p *ngIf="movie.vote_average" class="rating">
-                <strong>Rating:</strong> ⭐ {{ movie.vote_average | number:'1.1-1' }}/10
+              <p *ngIf="movie.vote_average" class="text-sm">
+                <span class="font-semibold">Rating:</span> ⭐ {{ movie.vote_average | number:'1.1-1' }}/10
               </p>
               
-              <div class="tracking-status" *ngIf="movieStatus">
+              <div class="card bg-base-200 p-4 mt-4" *ngIf="movieStatus">
                 <p>
-                  <strong>Status:</strong> 
+                  <span class="font-semibold">Status:</span> 
                   <span [ngClass]="{
-                    'status-want-to-watch': movieStatus.status === 'want-to-watch',
-                    'status-in-progress': movieStatus.status === 'in-progress',
-                    'status-watched': movieStatus.status === 'watched'
+                    'text-primary font-bold': movieStatus.status === 'want-to-watch',
+                    'text-warning font-bold': movieStatus.status === 'in-progress',
+                    'text-success font-bold': movieStatus.status === 'watched'
                   }">
                     {{ getStatusLabel(movieStatus.status) }}
                   </span>
                 </p>
-                <p class="last-updated">
-                  <small>Last updated: {{ movieStatus.lastUpdated | date:'medium' }}</small>
+                <p class="text-xs opacity-70 mt-1">
+                  Last updated: {{ movieStatus.lastUpdated | date:'medium' }}
                 </p>
               </div>
             </div>
             
-            <div class="tracking-buttons">
+            <div class="flex flex-wrap gap-2 mb-6">
               <button 
                 (click)="trackMovie('want-to-watch')" 
-                class="track-btn want-to-watch"
-                [class.active]="movieStatus?.status === 'want-to-watch'"
+                class="btn btn-primary btn-sm"
+                [class.btn-outline]="movieStatus?.status !== 'want-to-watch'"
               >
                 Want to Watch
               </button>
               <button 
                 (click)="trackMovie('in-progress')" 
-                class="track-btn in-progress"
-                [class.active]="movieStatus?.status === 'in-progress'"
+                class="btn btn-warning btn-sm"
+                [class.btn-outline]="movieStatus?.status !== 'in-progress'"
               >
                 In Progress
               </button>
               <button 
                 (click)="trackMovie('watched')" 
-                class="track-btn watched"
-                [class.active]="movieStatus?.status === 'watched'"
+                class="btn btn-success btn-sm"
+                [class.btn-outline]="movieStatus?.status !== 'watched'"
               >
                 Watched
               </button>
               <button 
                 *ngIf="movieStatus" 
                 (click)="removeFromTracking()" 
-                class="track-btn remove"
+                class="btn btn-error btn-sm"
               >
                 Remove Tracking
               </button>
@@ -103,194 +111,13 @@ import { Movie, MovieStatus } from '../../types/movie.types';
           </div>
         </div>
 
-        <div class="movie-overview">
-          <h2>Overview</h2>
-          <p>{{ movie.overview }}</p>
+        <div class="card bg-base-100 shadow p-6">
+          <h2 class="text-xl font-bold mb-3">Overview</h2>
+          <p class="text-base-content/80">{{ movie.overview }}</p>
         </div>
       </div>
     </div>
   `,
-  styles: [`
-    .movie-details-container {
-      padding: 20px 0;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .back-navigation {
-      margin-bottom: 20px;
-    }
-
-    .back-link {
-      display: inline-block;
-      padding: 8px 16px;
-      background-color: #f0f0f0;
-      color: #333;
-      text-decoration: none;
-      border-radius: 4px;
-      transition: background-color 0.3s;
-    }
-
-    .back-link:hover {
-      background-color: #e0e0e0;
-    }
-
-    .movie-header {
-      display: flex;
-      gap: 30px;
-      margin-bottom: 30px;
-    }
-
-    .movie-poster {
-      flex: 0 0 300px;
-      height: 450px;
-      overflow: hidden;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .movie-poster img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .no-poster {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #f5f5f5;
-      color: #777;
-    }
-
-    .movie-info {
-      flex: 1;
-    }
-
-    h1 {
-      margin: 0 0 20px 0;
-      font-size: 32px;
-      color: #333;
-    }
-
-    .movie-meta {
-      margin-bottom: 20px;
-    }
-
-    .movie-meta p {
-      margin: 10px 0;
-      font-size: 16px;
-    }
-
-    .tracking-status {
-      margin-top: 15px;
-      padding: 10px;
-      background-color: #f5f5f5;
-      border-radius: 4px;
-    }
-
-    .status-want-to-watch {
-      color: #2196f3;
-      font-weight: bold;
-    }
-
-    .status-in-progress {
-      color: #ff9800;
-      font-weight: bold;
-    }
-
-    .status-watched {
-      color: #4caf50;
-      font-weight: bold;
-    }
-
-    .last-updated {
-      color: #666;
-    }
-
-    .tracking-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    .track-btn {
-      padding: 10px 15px;
-      font-size: 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      border: none;
-      transition: opacity 0.3s;
-    }
-
-    .track-btn.active {
-      opacity: 0.7;
-    }
-
-    .want-to-watch {
-      background-color: #2196f3;
-      color: white;
-    }
-
-    .in-progress {
-      background-color: #ff9800;
-      color: white;
-    }
-
-    .watched {
-      background-color: #4caf50;
-      color: white;
-    }
-
-    .remove {
-      background-color: #f44336;
-      color: white;
-    }
-
-    .movie-overview {
-      margin-top: 30px;
-    }
-
-    .movie-overview h2 {
-      margin-bottom: 15px;
-      font-size: 24px;
-      color: #333;
-    }
-
-    .movie-overview p {
-      font-size: 16px;
-      line-height: 1.6;
-    }
-
-    .loading, .error, .not-found {
-      text-align: center;
-      padding: 40px;
-      font-size: 18px;
-      background-color: #f5f5f5;
-      border-radius: 8px;
-      margin: 20px 0;
-    }
-
-    .error {
-      color: #d32f2f;
-    }
-
-    @media (max-width: 768px) {
-      .movie-header {
-        flex-direction: column;
-      }
-
-      .movie-poster {
-        flex: 0 0 auto;
-        height: auto;
-        max-height: 450px;
-        margin-bottom: 20px;
-      }
-    }
-  `]
 })
 export class MovieDetailsComponent implements OnInit {
   movie: Movie | null = null;

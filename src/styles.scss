@@ -1,1 +1,17 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark, dracula;
+}
+
+/* Set Sora as the main font for the entire application */
+body {
+  font-family: 'Sora', sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Apply the font to all elements for consistency */
+* {
+  font-family: 'Sora', sans-serif;
+}
