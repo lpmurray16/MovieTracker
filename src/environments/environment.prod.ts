@@ -1,35 +1,16 @@
+// This file uses Netlify's environment variable replacement during build
+// https://docs.netlify.com/configure-builds/environment-variables/#declare-variables
 export const environment = {
   production: true,
   firebase: {
-    apiKey:
-      typeof process !== 'undefined'
-        ? process.env['FIREBASE_API_KEY']
-        : 'REPLACE_WITH_FIREBASE_API_KEY',
-    authDomain:
-      typeof process !== 'undefined'
-        ? process.env['FIREBASE_AUTH_DOMAIN']
-        : 'REPLACE_WITH_FIREBASE_AUTH_DOMAIN',
-    projectId:
-      typeof process !== 'undefined'
-        ? process.env['FIREBASE_PROJECT_ID']
-        : 'REPLACE_WITH_FIREBASE_PROJECT_ID',
-    storageBucket:
-      typeof process !== 'undefined'
-        ? process.env['FIREBASE_STORAGE_BUCKET']
-        : 'REPLACE_WITH_FIREBASE_STORAGE_BUCKET',
-    messagingSenderId:
-      typeof process !== 'undefined'
-        ? process.env['FIREBASE_MESSAGING_SENDER_ID']
-        : 'REPLACE_WITH_FIREBASE_MESSAGING_SENDER_ID',
-    appId:
-      typeof process !== 'undefined'
-        ? process.env['FIREBASE_APP_ID']
-        : 'REPLACE_WITH_FIREBASE_APP_ID',
+    apiKey: '___FIREBASE_API_KEY___',
+    authDomain: '___FIREBASE_AUTH_DOMAIN___',
+    projectId: '___FIREBASE_PROJECT_ID___',
+    storageBucket: '___FIREBASE_STORAGE_BUCKET___',
+    messagingSenderId: '___FIREBASE_MESSAGING_SENDER_ID___',
+    appId: '___FIREBASE_APP_ID___',
   },
   tmdb: {
-    apiKey:
-      typeof process !== 'undefined'
-        ? process.env['TMDB_API_KEY']
-        : 'REPLACE_WITH_TMDB_API_KEY',
+    apiKey: '___TMDB_API_KEY___',
   },
 };
