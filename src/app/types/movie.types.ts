@@ -1,5 +1,6 @@
-export interface Movie {
+export interface Movie extends MovieStatus {
   id: number;
+  documentId?: string;
   title: string;
   overview: string;
   poster_path: string;
@@ -9,11 +10,6 @@ export interface Movie {
 
 export interface MovieStatus {
   userId: string;
-  movieId: number;
   status: 'want-to-watch' | 'in-progress' | 'watched';
   lastUpdated: Date;
-}
-
-export interface MovieWithStatus extends Movie {
-  status?: MovieStatus;
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
+import { DatabaseService } from '../../services/database.service';
 import { Movie } from '../../types/movie.types';
 
 @Component({
@@ -27,7 +28,10 @@ import { Movie } from '../../types/movie.types';
         <p class="mb-4">
           Your watchlist is empty. Start adding movies from the search page!
         </p>
-        <a routerLink="/search" class="btn btn-primary">Go to Search</a>
+        <div class="flex flex-col sm:flex-row gap-2 justify-center">
+          <a routerLink="/search" class="btn btn-primary">Go to Search</a>
+          <a routerLink="/in-progress" class="btn btn-outline">In Progress</a>
+        </div>
       </div>
 
       <div
@@ -35,7 +39,7 @@ import { Movie } from '../../types/movie.types';
         *ngIf="movies.length"
       >
         <div
-          class="card lg:card-side bg-base-300 shadow-xl"
+          class="card lg:card-side bg-base-300 shadow-xl relative"
           *ngFor="let movie of movies"
         >
           <figure class="lg:w-50 lg:h-full sm:h-50 flex-shrink-0">
@@ -61,28 +65,28 @@ import { Movie } from '../../types/movie.types';
               ⭐ {{ movie.vote_average | number : '1.1-1' }}/10
             </p>
             <p class="text-sm opacity-90 line-clamp-3">{{ movie.overview }}</p>
-            <div class="card-actions flex-col gap-4 mt-4 items-center">
-              <a
+            <a
                 [routerLink]="['/movie', movie.id]"
-                class="btn btn-outline w-full"
+                class="btn btn-outline btn-sm absolute top-2 right-2 z-10"
                 >Details</a
               >
+            <div class="card-actions flex-col gap-4 mt-4 items-center">
               <div class="grid grid-cols-2 gap-2 w-full">
                 <button
-                  (click)="updateStatusOfMovie(movie.id, 'in-progress')"
+                  (click)="updateStatusOfMovie(movie.documentId!, 'in-progress')"
                   class="btn btn-warning btn-sm"
                 >
                   Mark In Progress
                 </button>
                 <button
-                  (click)="updateStatusOfMovie(movie.id, 'watched')"
+                  (click)="updateStatusOfMovie(movie.documentId!, 'watched')"
                   class="btn btn-success btn-sm"
                 >
                   Mark Watched
                 </button>
               </div>
               <button
-                (click)="removeFromDatabase(movie.id)"
+                (click)="removeFromDatabase(movie.documentId!)"
                 class="btn btn-error btn-sm w-full"
               >
                 Remove
@@ -100,30 +104,36 @@ export class WatchlistComponent implements OnInit {
   errorMessage = '';
   trackedMovieIds: number[] = [];
 
-  constructor(private movieService: MovieService) {}
+  constructor(private databaseService: DatabaseService) {}
 
   ngOnInit(): void {
     this.loadWatchlist();
   }
 
-  loadWatchlist(): void {
-    // For now, we're not loading any data
-    // This is just a placeholder until database functionality is implemented
-    this.isLoading = false;
-    this.movies = [];
+  async loadWatchlist(): Promise<void> {
+    this.isLoading = true;
     this.errorMessage = '';
+    this.movies = await this.databaseService.getMoviesByStatus('want-to-watch');
+    this.isLoading = false;
   }
 
-  updateStatusOfMovie(
-    movieId: number,
+  async updateStatusOfMovie(
+    movieId: string,
     newStatus: 'in-progress' | 'watched'
-  ): void {
-    // Database functionality will be implemented later
-    console.log(`Movie ${movieId} would be marked as ${newStatus}`);
+  ): Promise<void> {
+    const success = await this.databaseService.updateMovieStatus(
+      movieId,
+      newStatus
+    );
+    if (success) {
+      await this.loadWatchlist();
+    }
   }
 
-  removeFromDatabase(movieId: number): void {
-    // Database functionality will be implemented later
-    console.log(`Movie ${movieId} would be removed from database`);
+  async removeFromDatabase(movieId: string): Promise<void> {
+    const success = await this.databaseService.removeMovie(movieId);
+    if (success) {
+      await this.loadWatchlist();
+    }
   }
 }

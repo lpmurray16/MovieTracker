@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { Movie } from '../types/movie.types';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MovieService {
   private apiKey = environment.tmdb.apiKey;
@@ -13,28 +13,31 @@ export class MovieService {
 
   constructor(private http: HttpClient) {}
 
-  searchMovies(query: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/search/movie`, {
+  searchMovies(query: string): Observable<{ results: Movie[] }> {
+    return this.http.get<{ results: Movie[] }>(`${this.baseUrl}/search/movie`, {
       params: {
         api_key: this.apiKey,
-        query: query
-      }
+        query: query,
+      },
     });
   }
 
-  getMovieDetails(movieId: number): Observable<any> {
-    return this.http.get(`${this.baseUrl}/movie/${movieId}`, {
+  getMovieDetails(movieId: number): Observable<Movie> {
+    return this.http.get<Movie>(`${this.baseUrl}/movie/${movieId}`, {
       params: {
-        api_key: this.apiKey
-      }
+        api_key: this.apiKey,
+      },
     });
   }
 
-  getPopularMovies(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/movie/popular`, {
-      params: {
-        api_key: this.apiKey
+  getPopularMovies(): Observable<{ results: Movie[] }> {
+    return this.http.get<{ results: Movie[] }>(
+      `${this.baseUrl}/movie/popular`,
+      {
+        params: {
+          api_key: this.apiKey,
+        },
       }
-    });
+    );
   }
 }

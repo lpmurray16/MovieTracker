@@ -24,6 +24,7 @@
   </div>
 
   <main class="container mx-auto p-4">
+    <app-alert></app-alert>
     <router-outlet></router-outlet>
   </main>
 
@@ -49,9 +50,15 @@
       <span class="dock-label">Watched</span>
     </button>
     
-    <button *ngIf="user" (click)="signOut()" class="relative">
-      <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" fill="none" stroke="currentColor"></path></g></svg>
-      <span class="dock-label">Sign Out</span>
-    </button>
+    <div *ngIf="user" class="dropdown dropdown-top dropdown-end flex items-center justify-center">
+      <button tabindex="0" class="flex flex-col items-center justify-center">
+        <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt"><path d="M12 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="2"></path><path d="M18 21H6c-.55 0-1-.45-1-1v-1c0-3.87 3.13-7 7-7s7 3.13 7 7v1c0 .55-.45 1-1 1z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="2"></path></g></svg>
+        <span class="dock-label">Account</span>
+      </button>
+      <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-200 rounded-box w-52 mb-2 opacity-100">
+        <li class="menu-title px-4 py-2 text-xs font-semibold">{{ user.email || '' }}</li>
+        <li><a (click)="signOut()">Sign Out</a></li>
+      </ul>
+    </div>
   </div>
 </div>

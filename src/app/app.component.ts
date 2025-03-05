@@ -9,11 +9,12 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from './services/auth.service';
 import { User } from 'firebase/auth';
 import { Subscription } from 'rxjs';
+import { AlertComponent } from './components/alert/alert.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, CommonModule, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, CommonModule, RouterLinkActive, AlertComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })

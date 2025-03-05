@@ -55,4 +55,11 @@ export class AuthService {
   isAuthInitialized(): boolean {
     return this.authInitialized;
   }
+
+  async getUserId(): Promise<string | null> {
+    if (!this.user) {
+      return null;
+    }
+    return this.user.uid;
+  }
 }

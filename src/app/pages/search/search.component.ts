@@ -4,6 +4,9 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
 import { Movie } from '../../types/movie.types';
+import { DatabaseService } from '../../services/database.service';
+import { AuthService } from '../../services/auth.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-search',
@@ -11,8 +14,8 @@ import { Movie } from '../../types/movie.types';
   imports: [CommonModule, FormsModule, RouterLink],
   template: `
     <div class="container mx-auto p-4">
-      <h2 class="text-2xl font-bold mb-6">Search Movies</h2>
-      <div class="join w-full max-w-md mx-auto mb-8">
+      <h2 class="text-2xl font-bold mb-6 w-full flex items-center justify-center">Search Movies</h2>
+      <div class="join w-full max-w-md mx-auto mb-8 flex items-center justify-center">
         <input
           type="text"
           [(ngModel)]="searchQuery"
@@ -50,9 +53,14 @@ import { Movie } from '../../types/movie.types';
         *ngIf="searchResults.length"
       >
         <div
-          class="card lg:card-side bg-base-300 shadow-xl"
+          class="card lg:card-side bg-base-300 shadow-xl relative"
           *ngFor="let movie of searchResults"
         >
+          <a
+            [routerLink]="['/movie', movie.id]"
+            class="btn btn-outline btn-sm absolute top-2 right-2 z-10"
+            >Details</a
+          >
           <figure class="lg:w-50 lg:h-full sm:h-50 flex-shrink-0">
             <img
               *ngIf="movie.poster_path"
@@ -77,28 +85,23 @@ import { Movie } from '../../types/movie.types';
             </p>
             <p class="text-sm opacity-90 line-clamp-3">{{ movie.overview }}</p>
             <div class="card-actions flex-col gap-4 mt-4 items-center">
-              <a
-                [routerLink]="['/movie', movie.id]"
-                class="btn btn-outline w-full"
-                >Details</a
-              >
-              <!-- Database functionality will be added later -->
+              <!-- Database functionality for tracking movies -->
               <div class="grid grid-cols-3 gap-2 w-full">
                 <button
-                  class="btn btn-primary btn-sm disabled"
-                  disabled
+                  class="btn btn-primary btn-sm"
+                  (click)="addToWatchlist(movie)"
                 >
                   Want to Watch
                 </button>
                 <button
-                  class="btn btn-warning btn-sm disabled"
-                  disabled
+                  class="btn btn-warning btn-sm"
+                  (click)="addToInProgress(movie)"
                 >
                   In Progress
                 </button>
                 <button
-                  class="btn btn-success btn-sm disabled"
-                  disabled
+                  class="btn btn-success btn-sm"
+                  (click)="addToWatched(movie)"
                 >
                   Watched
                 </button>
@@ -118,7 +121,10 @@ export class SearchComponent implements OnInit {
   searchPerformed = false;
 
   constructor(
-    private movieService: MovieService
+    private movieService: MovieService,
+    private databaseService: DatabaseService,
+    private authService: AuthService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -171,5 +177,48 @@ export class SearchComponent implements OnInit {
     });
   }
 
+  // Methods to add movies to different lists
+  addToWatchlist(movie: Movie): void {
+    this.databaseService
+      .addMovie(movie, 'want-to-watch')
+      .then((success) => {
+        if (!success) {
+          this.alertService.showError('Failed to add movie to watchlist');
+        }
+      })
+      .catch((error) => {
+        console.error('Error adding movie to watchlist:', error);
+        this.alertService.showError('Failed to add movie to watchlist');
+      });
+  }
 
+  addToInProgress(movie: Movie): void {
+    this.databaseService
+      .addMovie(movie, 'in-progress')
+      .then((success) => {
+        if (!success) {
+          this.alertService.showError(
+            'Failed to add movie to in-progress list'
+          );
+        }
+      })
+      .catch((error) => {
+        console.error('Error adding movie to in-progress list:', error);
+        this.alertService.showError('Failed to add movie to in-progress list');
+      });
+  }
+
+  addToWatched(movie: Movie): void {
+    this.databaseService
+      .addMovie(movie, 'watched')
+      .then((success) => {
+        if (!success) {
+          this.alertService.showError('Failed to add movie to watched list');
+        }
+      })
+      .catch((error) => {
+        console.error('Error adding movie to watched list:', error);
+        this.alertService.showError('Failed to add movie to watched list');
+      });
+  }
 }
