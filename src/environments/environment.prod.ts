@@ -1,7 +1,7 @@
 // This file uses Netlify's environment variable replacement during build
 // https://docs.netlify.com/configure-builds/environment-variables/#declare-variables
 export const environment = {
-  production: false,
+  production: true,
   firebase: {
     apiKey: '${FIREBASE_API_KEY}',
     authDomain: '${FIREBASE_AUTH_DOMAIN}',
