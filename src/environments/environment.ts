@@ -4,11 +4,11 @@ export const environment = {
   production: false,
   firebase: {
     apiKey: '${FIREBASE_API_KEY}',
-    authDomain: '${FIREBASE_AUTH_DOMAIN}',
-    projectId: '${FIREBASE_PROJECT_ID}',
-    storageBucket: '${FIREBASE_STORAGE_BUCKET}',
-    messagingSenderId: '${FIREBASE_MESSAGING_SENDER_ID}',
-    appId: '${FIREBASE_APP_ID}',
+    authDomain: 'movie-tracker-c5ee4.firebaseapp.com',
+    projectId: 'movie-tracker-c5ee4',
+    storageBucket: 'movie-tracker-c5ee4.firebasestorage.app',
+    messagingSenderId: '1069302249731',
+    appId: '1:1069302249731:web:5a95e3a54bff298df01136',
   },
   tmdb: {
     apiKey: '${TMDB_API_KEY}',
