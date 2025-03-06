@@ -2,13 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Movie } from '../types/movie.types';
-import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MovieService {
-  private apiKey = environment.tmdb.apiKey;
+  private apiKey = import.meta.env.NG_APP_TMDB_API_KEY;
   private baseUrl = 'https://api.themoviedb.org/3';
 
   constructor(private http: HttpClient) {}

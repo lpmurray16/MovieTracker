@@ -3,7 +3,7 @@
 export const environment = {
   production: true,
   firebase: {
-    apiKey: '${FIREBASE_API_KEY}',
+    apiKey: process.env['NG_FIREBASE_API_KEY'],
     authDomain: 'movie-tracker-c5ee4.firebaseapp.com',
     projectId: 'movie-tracker-c5ee4',
     storageBucket: 'movie-tracker-c5ee4.firebasestorage.app',
@@ -11,6 +11,6 @@ export const environment = {
     appId: '1:1069302249731:web:5a95e3a54bff298df01136',
   },
   tmdb: {
-    apiKey: '${TMDB_API_KEY}',
+    apiKey: process.env['NG_TMDB_API_KEY'],
   },
 };

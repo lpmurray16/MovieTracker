@@ -2,10 +2,6 @@
   command = "npm run build"
   publish = "dist/movie-tracker/browser"
 
-[build.environment]
-  FIREBASE_API_KEY = "${FIREBASE_API_KEY}"
-  TMDB_API_KEY = "${TMDB_API_KEY}"
-
 # Redirect all routes to index.html for Angular routing
 [[redirects]]
   from = "/*"
