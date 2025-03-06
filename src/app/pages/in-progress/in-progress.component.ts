@@ -30,7 +30,9 @@ import { Movie } from '../../types/movie.types';
           your watchlist!
         </p>
         <div class="flex flex-col sm:flex-row gap-2 justify-center">
-          <a routerLink="/search" class="btn btn-outline">Go to Search</a>
+          <a routerLink="/search" class="btn btn-outline"
+            >Go to Search <i class="fas fa-search"></i
+          ></a>
           <a routerLink="/watchlist" class="btn btn-primary">Go to Watchlist</a>
         </div>
       </div>
@@ -69,8 +71,8 @@ import { Movie } from '../../types/movie.types';
             <a
               [routerLink]="['/movie', movie.id]"
               class="btn btn-outline btn-sm absolute top-2 right-2 z-10"
-              >Details</a
-            >
+              >Details <i class="fas fa-list"></i
+            ></a>
             <div class="card-actions flex-col gap-2 mt-4 items-center">
               <div class="grid grid-cols-2 gap-2 w-full">
                 <button
@@ -90,7 +92,7 @@ import { Movie } from '../../types/movie.types';
                 (click)="removeFromTracking(movie.documentId!)"
                 class="btn btn-error btn-sm w-full"
               >
-                Remove
+                Remove <i class="fas fa-trash"></i>
               </button>
             </div>
           </div>

@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-base-100 pb-16 lg:pb-0">
-  <div class="navbar bg-base-200 lg:flex hidden">
+  <div class="navbar bg-base-200 lg:flex hidden sticky top-0 z-50">
     <div class="flex-1">
-      <a class="btn btn-ghost text-xl">MovieTracker</a>
+      <a class="btn btn-ghost text-xl" routerLink="/search">MovieTracker <i class="fas fa-film"></i></a>
     </div>
     <div class="flex-none">
       <ul class="tabs tabs-border">
@@ -29,7 +29,7 @@
   </main>
 
   <!-- Bottom Navigation for Mobile -->
-  <div class="dock dock-md lg:hidden">
+  <div class="dock dock-md lg:hidden z-20">
     <button routerLink="/search" routerLinkActive="dock-active">
       <svg class="size-[1.2em]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="currentColor" stroke-linejoin="miter" stroke-linecap="butt"><circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="2"></circle><line x1="21" y1="21" x2="16.65" y2="16.65" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="2"></line></g></svg>
       <span class="dock-label">Search</span>

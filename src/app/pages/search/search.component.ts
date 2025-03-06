@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -24,7 +24,7 @@ import { AlertService } from '../../services/alert.service';
           class="input input-bordered join-item flex-1"
         />
         <button (click)="searchMovies()" class="btn btn-primary join-item">
-          Search
+          <i class="fas fa-search"></i>
         </button>
       </div>
 
@@ -59,8 +59,7 @@ import { AlertService } from '../../services/alert.service';
           <a
             [routerLink]="['/movie', movie.id]"
             class="btn btn-outline btn-sm absolute top-2 right-2 z-10"
-            >Details</a
-          >
+            >Details <i class="fas fa-list"></i></a>
           <figure class="lg:w-50 lg:h-full sm:h-50 flex-shrink-0">
             <img
               *ngIf="movie.poster_path"
@@ -91,7 +90,7 @@ import { AlertService } from '../../services/alert.service';
                   class="btn btn-primary btn-sm"
                   (click)="addToWatchlist(movie)"
                 >
-                  Want to Watch
+                  To Watch <i class="fas fa-plus"></i>
                 </button>
                 <button
                   class="btn btn-warning btn-sm"
@@ -111,7 +110,28 @@ import { AlertService } from '../../services/alert.service';
         </div>
       </div>
     </div>
+
+    <!-- Floating Action Button for scrolling to top -->
+    <button 
+      *ngIf="showScrollTopButton" 
+      (click)="scrollToTop()" 
+      class="btn btn-circle btn-primary shadow-lg fixed bottom-20 right-4 z-50 animate-fade-in"
+      aria-label="Scroll to top"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+      </svg>
+    </button>
   `,
+  styles: [`
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.3s ease-in-out;
+    }
+  `]
 })
 export class SearchComponent implements OnInit {
   searchQuery = '';
@@ -119,6 +139,7 @@ export class SearchComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
   searchPerformed = false;
+  showScrollTopButton = false;
 
   constructor(
     private movieService: MovieService,
@@ -130,6 +151,16 @@ export class SearchComponent implements OnInit {
   ngOnInit(): void {
     // Load popular movies when the component initializes
     this.loadPopularMovies();
+  }
+
+  @HostListener('window:scroll')
+  onWindowScroll(): void {
+    // Show button when user scrolls down 300px from the top
+    this.showScrollTopButton = window.scrollY > 300;
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   loadPopularMovies(): void {

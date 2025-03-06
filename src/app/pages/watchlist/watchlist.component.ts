@@ -29,7 +29,9 @@ import { Movie } from '../../types/movie.types';
           Your watchlist is empty. Start adding movies from the search page!
         </p>
         <div class="flex flex-col sm:flex-row gap-2 justify-center">
-          <a routerLink="/search" class="btn btn-primary">Go to Search</a>
+          <a routerLink="/search" class="btn btn-primary"
+            >Go to Search <i class="fas fa-search"></i
+          ></a>
           <a routerLink="/in-progress" class="btn btn-outline">In Progress</a>
         </div>
       </div>
@@ -66,14 +68,16 @@ import { Movie } from '../../types/movie.types';
             </p>
             <p class="text-sm opacity-90 line-clamp-3">{{ movie.overview }}</p>
             <a
-                [routerLink]="['/movie', movie.id]"
-                class="btn btn-outline btn-sm absolute top-2 right-2 z-10"
-                >Details</a
-              >
+              [routerLink]="['/movie', movie.id]"
+              class="btn btn-outline btn-sm absolute top-2 right-2 z-10"
+              >Details <i class="fas fa-list"></i
+            ></a>
             <div class="card-actions flex-col gap-4 mt-4 items-center">
               <div class="grid grid-cols-2 gap-2 w-full">
                 <button
-                  (click)="updateStatusOfMovie(movie.documentId!, 'in-progress')"
+                  (click)="
+                    updateStatusOfMovie(movie.documentId!, 'in-progress')
+                  "
                   class="btn btn-warning btn-sm"
                 >
                   Mark In Progress
@@ -89,7 +93,7 @@ import { Movie } from '../../types/movie.types';
                 (click)="removeFromDatabase(movie.documentId!)"
                 class="btn btn-error btn-sm w-full"
               >
-                Remove
+                Remove <i class="fas fa-trash"></i>
               </button>
             </div>
           </div>
