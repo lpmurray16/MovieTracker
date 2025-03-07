@@ -55,20 +55,15 @@ import { AlertService } from '../../services/alert.service';
       </div>
 
       <div
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6"
+        class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6"
         *ngIf="searchResults.length"
       >
         <div
-          class="card lg:card-side bg-base-300 shadow-xl relative"
+          class="card lg:card-side md:card glass shadow-xl relative"
           *ngFor="let movie of searchResults"
         >
-          <a
-            [routerLink]="['/movie', movie.id]"
-            class="btn btn-outline btn-sm absolute top-2 right-2 z-10"
-            >Details <i class="fas fa-list"></i
-          ></a>
           <figure
-            class="lg:w-50 lg:h-full sm:h-50 flex-shrink-0 rounded-l-xl overflow-hidden"
+            class="lg:w-50 lg:h-full sm:h-50 flex-shrink-0 rounded-xl overflow-hidden"
           >
             <img
               *ngIf="movie.poster_path"
@@ -92,29 +87,36 @@ import { AlertService } from '../../services/alert.service';
               ⭐ {{ movie.vote_average | number : '1.1-1' }}/10
             </p>
             <p class="text-sm opacity-90 line-clamp-3">{{ movie.overview }}</p>
-            <div class="card-actions flex-col gap-4 mt-4 items-center">
+            <div class="card-actions mt-4">
               <!-- Database functionality for tracking movies -->
-              <div class="grid grid-cols-3 gap-2 w-full">
+              <div class="flex flex-col md:flex-row gap-2 w-full">
                 <button
-                  class="btn btn-primary btn-sm"
+                  class="btn btn-primary btn-sm flex-grow-1"
                   (click)="addToWatchlist(movie)"
                 >
                   To Watch <i class="fas fa-plus"></i>
                 </button>
                 <button
-                  class="btn btn-warning btn-sm"
+                  class="btn btn-warning btn-sm flex-grow-1"
                   (click)="addToInProgress(movie)"
                 >
                   In Progress
                 </button>
                 <button
-                  class="btn btn-success btn-sm"
+                  class="btn btn-success btn-sm flex-grow-1"
                   (click)="addToWatched(movie)"
                 >
                   Watched
                 </button>
               </div>
             </div>
+            <!-- Move Details button here for mobile -->
+            <a
+              [routerLink]="['/movie', movie.id]"
+              class="btn btn-outline btn-sm mt-4 md:absolute md:top-2 md:right-2 md:z-10"
+            >
+              Details <i class="fas fa-list"></i>
+            </a>
           </div>
         </div>
       </div>

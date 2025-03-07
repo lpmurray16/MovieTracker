@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MovieService } from '../../services/movie.service';
 import { Movie } from '../../types/movie.types';
+import { DatabaseService } from '../../services/database.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-movie-details',
@@ -18,22 +20,9 @@ import { Movie } from '../../types/movie.types';
         {{ errorMessage }}
       </div>
 
-      <div
-        *ngIf="!isLoading && !movie"
-        class="card bg-base-200 p-8 text-center"
-      >
-        <p class="mb-4">
-          Movie not found. The movie might have been removed or the ID is
-          invalid.
-        </p>
-        <a routerLink="/search" class="btn btn-outline"
-          >Back to Search <i class="fas fa-search"></i
-        ></a>
-      </div>
-
       <div class="movie-content" *ngIf="movie">
         <div class="mb-4">
-          <a routerLink="/search" class="btn btn-ghost btn-sm">
+          <a routerLink="/search" class="btn btn-ghost btn-sm text-xl">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -52,14 +41,14 @@ import { Movie } from '../../types/movie.types';
           </a>
         </div>
 
-        <div class="flex flex-col md:flex-row gap-6 mb-8">
-          <div class="w-full md:w-1/3 lg:w-1/4 flex-shrink-0">
-            <div class="rounded-lg overflow-hidden shadow-lg h-auto md:h-96">
+        <div class="flex flex-col lg:flex-row gap-6 mb-8">
+          <div class="w-full lg:w-1/4 flex-shrink-0">
+            <div class="rounded-lg overflow-hidden shadow-lg aspect-w-2 aspect-h-3"> <!-- Added aspect ratio classes -->
               <img
                 *ngIf="movie.poster_path"
                 [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path"
                 [alt]="movie.title + ' poster'"
-                class="w-full h-full object-cover"
+                class="w-full h-full object-cover" 
               />
               <div
                 *ngIf="!movie.poster_path"
@@ -69,7 +58,6 @@ import { Movie } from '../../types/movie.types';
               </div>
             </div>
           </div>
-
           <div class="flex-1">
             <h1 class="text-3xl font-bold mb-4">{{ movie.title }}</h1>
 
@@ -83,13 +71,45 @@ import { Movie } from '../../types/movie.types';
                 <span class="font-semibold">Rating:</span> ⭐
                 {{ movie.vote_average | number : '1.1-1' }}/10
               </p>
+              <!-- Add link to TMDB page -->
+          <a
+            *ngIf="movie.id"
+            [href]="'https://www.themoviedb.org/movie/' + movie.id"
+            target="_blank"
+            class="btn btn-outline btn-sm mt-4"
+          >
+            View on TMDB <i class="fas fa-external-link-alt"></i>
+          </a>
             </div>
           </div>
-        </div>
-
-        <div class="card bg-base-100 shadow p-6">
-          <h2 class="text-xl font-bold mb-3">Overview</h2>
-          <p class="text-base-content/80">{{ movie.overview }}</p>
+          <!-- Overview section in a separate column on large screens -->
+          <div class="card bg-base-100 shadow p-6 lg:w-1/3">
+            <h2 class="text-xl font-bold mb-3">Overview</h2>
+            <p class="text-base-content/80">{{ movie.overview }}</p>
+            <div class="card-actions mt-4">
+              <!-- Database functionality for tracking movies -->
+              <div class="flex flex-col md:flex-row gap-2 w-full">
+                <button
+                  class="btn btn-primary btn-sm flex-grow-1"
+                  (click)="addToWatchlist(movie)"
+                >
+                  To Watch <i class="fas fa-plus"></i>
+                </button>
+                <button
+                  class="btn btn-warning btn-sm flex-grow-1"
+                  (click)="addToInProgress(movie)"
+                >
+                  In Progress
+                </button>
+                <button
+                  class="btn btn-success btn-sm flex-grow-1"
+                  (click)="addToWatched(movie)"
+                >
+                  Watched
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -103,7 +123,9 @@ export class MovieDetailsComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private movieService: MovieService
+    private movieService: MovieService,
+    private databaseService: DatabaseService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -134,5 +156,50 @@ export class MovieDetailsComponent implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+
+  // Methods to add movies to different lists
+  addToWatchlist(movie: Movie): void {
+    this.databaseService
+      .addMovie(movie, 'want-to-watch')
+      .then((success) => {
+        if (!success) {
+          this.alertService.showError('Failed to add movie to watchlist');
+        }
+      })
+      .catch((error) => {
+        console.error('Error adding movie to watchlist:', error);
+        this.alertService.showError('Failed to add movie to watchlist');
+      });
+  }
+
+  addToInProgress(movie: Movie): void {
+    this.databaseService
+      .addMovie(movie, 'in-progress')
+      .then((success) => {
+        if (!success) {
+          this.alertService.showError(
+            'Failed to add movie to in-progress list'
+          );
+        }
+      })
+      .catch((error) => {
+        console.error('Error adding movie to in-progress list:', error);
+        this.alertService.showError('Failed to add movie to in-progress list');
+      });
+  }
+
+  addToWatched(movie: Movie): void {
+    this.databaseService
+      .addMovie(movie, 'watched')
+      .then((success) => {
+        if (!success) {
+          this.alertService.showError('Failed to add movie to watched list');
+        }
+      })
+      .catch((error) => {
+        console.error('Error adding movie to watched list:', error);
+        this.alertService.showError('Failed to add movie to watched list');
+      });
   }
 }

@@ -42,7 +42,7 @@ import { Movie } from '../../types/movie.types';
         *ngIf="movies.length"
       >
         <div
-          class="card lg:card-side bg-base-300 shadow-xl relative"
+          class="card lg:card-side glass shadow-xl relative"
           *ngFor="let movie of movies"
         >
           <figure class="lg:w-50 lg:h-full sm:h-50 flex-shrink-0">

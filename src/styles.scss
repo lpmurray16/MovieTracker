@@ -15,3 +15,21 @@ body {
 * {
   font-family: 'Sora', sans-serif;
 }
+
+@keyframes gradientAnimation {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.bg-gradient-animation {
+  background: linear-gradient(45deg, var(--color-base-300), var(--color-primary), var(--color-base-200), var(--color-base-100)); // Changed to 45deg
+  background-size: 600% 600%;
+  animation: gradientAnimation 15s ease infinite;
+}
